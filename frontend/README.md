@@ -30,3 +30,28 @@ This is what the generated HTML looks like unaltered:
 - I will extract the styles into its own stylesheet rather than using inline styles
 - I will simplify our HTML markup css selector to be as minimal as possible
 - For the HTML pages, i used soft tabs two spaces as standard and sticked to it through out the page
+
+## server Static Website Locally
+We need to serve our static website locally so we can start using the stylesheets externally from our HTML page in a Cloud Developer Environment(CDE)
+
+>This isnt neccessary with local development 
+
+Assuming we have node install we will use the simple web server http-server
+
+
+### Install HTTP Server
+```sh
+npm i http-server -g
+
+```
+https://www.npmjs.com/package/http-server
+
+### Server Website
+
+http-server will serve a public folder by default where the command is run
+
+```sh
+cd frontend
+http-server
+
+```
