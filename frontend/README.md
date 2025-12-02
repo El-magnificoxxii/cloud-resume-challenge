@@ -55,3 +55,7 @@ cd frontend
 http-server
 
 ```
+
+## Image Size Considerations
+i have a background texture that was 4.3MB
+I'm going to optimise it to webp with an online tool
