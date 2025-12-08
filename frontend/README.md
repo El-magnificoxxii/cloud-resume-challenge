@@ -59,3 +59,9 @@ http-server
 ## Image Size Considerations
 i have a background texture that was 4.3MB
 I'm going to optimise it to webp with an online tool
+
+
+## Frontend Framework Consideration
+- Choose to use REact because it is the most popular Javascript framwork
+- Choose to use Vite.js over webpack because our frontend is very simple
+- Configured React Router V&, decided to use declarative mopde because again our app is very simple
