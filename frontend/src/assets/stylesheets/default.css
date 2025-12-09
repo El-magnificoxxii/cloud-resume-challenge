@@ -81,38 +81,4 @@ article {
     margin: 0 auto;  /* Add this line for horizontal centering */
 }
 
-body[location='resume'] section.header {
-    text-align: center;
-    padding-bottom: 12px;
-}
 
-body[location='resume'] section h2 {
-    border-bottom: solid 1px rgb(0,0,0);
-    padding: 8px 0px;
-    font-size: 16px;
-}
-
-body[location='resume'] section h3 {
-    font-size: 16px;
-}
-
-body[location='resume'] .item {
-    padding: 8px 0px;
-}
-
-body[location='resume'] .item_heading {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;/* Distributes space: left item expands, right hugs edge */
-    align-items: baseline;/* Keeps text lines aligned vertically */
-}
-
-body[location='resume'] .item_heading h3 {
-    flex: 1;  /* Makes "College, Location" expand to fill left space, creating the gap */
-    margin-right: 16px;  /* Optional: Extra buffer before the date if needed */
-}
-
-body[location='resume'] .duration {
-    white-space: nowrap;  /* Prevents "Graduation Year" from wrapping */
-    font-style: italic;  /* Optional: Makes date stand out, like in pro resumes */
-}

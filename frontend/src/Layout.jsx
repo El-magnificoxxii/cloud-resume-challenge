@@ -1,12 +1,30 @@
-import { useState } from 'react'
-import Header from 'comps/Header'
-import ResumePage from 'pages/ResumePage'
-import { Outlet } from 'react-router'
-
+import { useEffect } from "react";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
+import Header from "comps/Header";
+import 'css/default.css'
 
 
 export default function Layout() {
-  const [count, setCount] = useState(0)
+  const location = useLocation();
+
+  useEffect(() => {
+    let pageName = "home";
+
+    if (location.pathname === "/") {
+      pageName = "home";
+    } else if (location.pathname === "/resume") {
+      pageName = "resume";
+    } else if (location.pathname === "/projects") {
+      pageName = "projects";
+    }
+
+    document.body.setAttribute("location", pageName);
+
+    // cleanup
+    return () => {
+      document.body.removeAttribute("location");
+    };
+  }, [location]);
 
   return (
     <>
