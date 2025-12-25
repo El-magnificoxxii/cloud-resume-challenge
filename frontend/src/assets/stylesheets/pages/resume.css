@@ -3,6 +3,13 @@ body[location='resume'] section.header {
     padding-bottom: 12px;
 }
 
+body[location='resume'] section.header p {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+}
+
 body[location='resume'] section h2 {
     border-bottom: solid 1px rgb(0,0,0);
     padding: 8px 0px;
@@ -32,4 +39,21 @@ body[location='resume'] .item_heading h3 {
 body[location='resume'] .duration {
     white-space: nowrap;  /* Prevents "Graduation Year" from wrapping */
     font-style: italic;  /* Optional: Makes date stand out, like in pro resumes */
+}
+
+body[location='resume'] {/* test font, you can comment out later*/
+    font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-size: 14px;
+    line-height: 1.5; /* Improves readability */
+    color: #111; /* Neutral, professional black */
+}
+
+body[location='resume'] article > .skills {
+    margin-bottom: 0;  /* neutralizes the 16px flex-gap */
+}
+
+body[location='resume'] .skills {
+    padding: 0;
+      /* match spacing in other sections */
+    line-height: 1.5;     /* consistent with body text */
 }
