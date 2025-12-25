@@ -41,19 +41,4 @@ body[location='resume'] .duration {
     font-style: italic;  /* Optional: Makes date stand out, like in pro resumes */
 }
 
-body[location='resume'] {/* test font, you can comment out later*/
-    font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-    font-size: 14px;
-    line-height: 1.5; /* Improves readability */
-    color: #111; /* Neutral, professional black */
-}
 
-body[location='resume'] article > .skills {
-    margin-bottom: 0;  /* neutralizes the 16px flex-gap */
-}
-
-body[location='resume'] .skills {
-    padding: 0;
-      /* match spacing in other sections */
-    line-height: 1.5;     /* consistent with body text */
-}
