@@ -20,7 +20,7 @@ const resumeData = {
             "Securing Hub-and-Spoke Azure Networks with Azure Firewall and Point-to-Site VPN",
           link:
             "https://github.com/El-magnificoxxii/Azure-Refresher/blob/main/Point-to-Site-Connection",
-          duration: "June 2025",
+          duration: "Jun 2025",
           summary:
             "Designed and implemented a secure Azure network architecture combining centralized traffic control with remote user connectivity.",
           bullets: [
@@ -43,7 +43,7 @@ const resumeData = {
             "Hosting Multiple IIS Websites on Azure Using Application Gateway and HTTPS",
           link:
             "https://github.com/El-magnificoxxii/Azure-Refresher/tree/main/azure-webserver-windows",
-          duration: "July 2025",
+          duration: "Jul 2025",
           summary:
             "Built and documented a multi-phase Azure infrastructure project to host multiple IIS-based websites on a single Windows Server virtual machine.",
           bullets: [
@@ -59,7 +59,7 @@ const resumeData = {
           title: "Azure FinOps Power BI Dashboard",
           link:
             "https://github.com/El-magnificoxxii/Azure-FinOps-PowerBI-Dashboard-1.0",
-          duration: "November 2025",
+          duration: "Nov 2025",
           summary:
             "Built a Power BI dashboard to analyze and visualize Azure cost and usage data using FinOps principles.",
           bullets: [
