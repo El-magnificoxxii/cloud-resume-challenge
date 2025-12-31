@@ -51,16 +51,22 @@ body[location='resume'] {
 
 @media (--small-only) {
     body[location='resume'] {
+            section.header {
+            p {
+                flex-direction: column;
+                span.bull {display: none;}
+               
+            }
+        }
         background-color: #33ff00;
         .item_heading {
             flex-direction: column;
             align-items: flex-start;
             gap: 4px;
-        }
-
-        .item_heading h3 {
-            padding-right: 0;
-        }
+            h3 {
+                padding-right: 0;
+            }
+        }   
     }
 }
 
