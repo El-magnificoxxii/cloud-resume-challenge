@@ -1,16 +1,17 @@
 @import './breakpoints.css';
+
 * {
     box-sizing: border-box;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-
 html, body {
     height: 100%;
-    width: 100%;
+    max-width: 100%;
     margin: 0px;
     padding: 0px;
     background: #a88c62 url('/assets/images/kiwihug-iiXyEE-HVXQ-unsplash.webp');
+    overflow-x: hidden;
 }
 
 h1,h2,h3,h4,h5 {
@@ -26,7 +27,9 @@ main {
     width: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    overflow-x: hidden; /* to remove */
+    overflow-y: auto; /* to remove */
 }
 
 header {
@@ -59,27 +62,50 @@ li {
 }
 
 div.content_wrap {
-    padding: 32px;
     height: 100%;
     width: 100%;
     overflow: auto;
+    padding: 32px;
 }
 
 div.content {
-    flex-grow: 1; 
+    flex-grow: 1;
     display: block;
     justify-content: center;
 }
 
 article {
-    width: 1100px;
+    /*width: 1100px;*/
     background: rgb(255,255,255);
-    box-shadow: 0px 1px 9px 1px rgba(0, 0, 0, 0.5);
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin: 0 auto;  /* Add this line for horizontal centering */
+    margin: 0 auto; /* Add this line for horizontal centering */
 }
 
+@media (--small-only) {
+    body[location='resume'] {
+        article {
+        }
+    }
+}
 
+@media (--medium-up) {
+    body[location='resume'] {
+        div.content_wrap {
+            padding: 32px;
+        }
+        article {
+            max-width: 1100px; /*to remove for*/
+            width: 100%; /*to remove*/
+            box-shadow: 0px 1px 9px 1px rgba(0, 0, 0, 0.5);
+        }
+    }
+}
+
+@media (--large-up) {
+    body[location='resume'] {
+       
+    }
+}
