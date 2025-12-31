@@ -29,58 +29,57 @@ body[location='resume'] {
         }
     }
   
-    .item {
-        padding: 8px 0px;
-        /*display: grid*/;/*test*/
-        grid-template-columns: 1fr auto;/*test*/
-        column-gap: 24px;/*test*/
-    }
-
-    .item p,
-    .item ul {
-        grid-column: 1 / 2; /* 🔑 test */
-    } 
-    
     .item_heading {
-
-        grid-column: 1 / 2;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;/* Distributes space: left item expands, right hugs edge */
-        align-items: baseline;/* Keeps text lines aligned vertically */
-        h3 {
-            flex: 1; /* Makes "College, Location" expand to fill left space, creating the gap */
-            margin-right: 16px; /* Optional: Extra buffer before the date if needed */
-        }
-    }
-   
-    .duration {
-        grid-column: 2 / 3;/*test*/
-        align-self: start;/*test*/
-        white-space: nowrap; /* Prevents "Graduation Year" from wrapping */
-        font-style: italic; /* Optional: Makes date stand out, like in pro resumes */
+        flex-wrap: wrap;           /* Allows wrapping if title is very long */
+        align-items: baseline;
+        margin-bottom: 8px;        /* Space before description/bullets */
     }
 
+    .item_heading h3 {             /* Company/college name */
+        flex: 1 1 0;                /* Takes available space, stays left */
+        margin: 0;
+        padding-right: 32px;       /* Reserves visual space for date */
+    }
+
+    .duration {
+        white-space: nowrap;
+        font-style: italic;
+        flex-shrink: 0;            /* Critical: prevents date from moving left */
+    }
 }
 
 @media (--small-only) {
     body[location='resume'] {
+        background-color: #33ff00;
         .item_heading {
             flex-direction: column;
             align-items: flex-start;
             gap: 4px;
+        }
+
+        .item_heading h3 {
+            padding-right: 0;
         }
     }
 }
 
 @media (--medium-up) {
     body[location='resume'] {
-       
+        background-color: yellow;
+        .item_heading h3 {
+            padding-right: 48px;   /* More space on wider screens */
+        }
+
+        .duration {
+            min-width: 120px;      /*  consistent date column width */
+            text-align: right;
+        }
     }
 }
 
 @media (--large-up) {
     body[location='resume'] {
-       
-    }
+        background-color: red;
+    }     
 }
