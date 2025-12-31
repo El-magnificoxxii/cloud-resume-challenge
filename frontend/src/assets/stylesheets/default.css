@@ -84,6 +84,7 @@ article {
     margin: 0 auto; /* Add this line for horizontal centering */
 }
 
+
 @media (--small-only) {
     body[location='resume'] {
         article {

@@ -31,8 +31,19 @@ body[location='resume'] {
   
     .item {
         padding: 8px 0px;
+        /*display: grid*/;/*test*/
+        grid-template-columns: 1fr auto;/*test*/
+        column-gap: 24px;/*test*/
     }
+
+    .item p,
+    .item ul {
+        grid-column: 1 / 2; /* 🔑 test */
+    } 
+    
     .item_heading {
+
+        grid-column: 1 / 2;
         display: flex;
         flex-direction: row;
         justify-content: space-between;/* Distributes space: left item expands, right hugs edge */
@@ -44,9 +55,12 @@ body[location='resume'] {
     }
    
     .duration {
+        grid-column: 2 / 3;/*test*/
+        align-self: start;/*test*/
         white-space: nowrap; /* Prevents "Graduation Year" from wrapping */
         font-style: italic; /* Optional: Makes date stand out, like in pro resumes */
     }
+
 }
 
 @media (--small-only) {
