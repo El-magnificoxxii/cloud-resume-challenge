@@ -1,44 +1,107 @@
-body[location='resume'] section.header {
-    text-align: center;
-    padding-bottom: 12px;
+@import '../breakpoints.css';
+
+body[location='resume'] {
+    /* Header section */
+    section.header {
+        text-align: center;
+        padding-bottom: 12px;
+    }
+
+    section.header p {
+        display: flex;
+        flex-wrap: wrap;
+        text-align: center;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    section.header p a,
+    section.header p span {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* Section headings */
+    section h2 {
+        border-bottom: 1px solid #000;
+        padding: 8px 0;
+        font-size: 16px;
+    }
+
+    section h3 {
+        font-size: 16px;
+    }
+
+    /* Resume items */
+    .item {
+        padding: 8px 0;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        column-gap: 24px;
+    }
+
+    .item_heading {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: baseline;
+        grid-column: 1 / 2;
+    }
+
+    .item_heading h3 {
+        flex: 1;
+        margin-right: 16px;
+    }
+
+    .duration {
+        grid-column: 2 / 3;
+        white-space: nowrap;
+        font-style: italic;
+        align-self: start;
+    }
+
+    /* Ensure paragraphs and lists stay in first column */
+    .item p,
+    .item ul {
+        grid-column: 1 / 2;
+        margin: 0;
+    }
 }
 
-body[location='resume'] section.header p {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    justify-content: center;
+/* Small screens */
+@media (--small-only) {
+    body[location='resume'] {
+        .item {
+            grid-template-columns: 1fr; /* Stack content and duration */
+        }
+
+        .item_heading {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .duration {
+            grid-column: 1 / 2;
+        }
+    }
 }
 
-body[location='resume'] section h2 {
-    border-bottom: solid 1px rgb(0,0,0);
-    padding: 8px 0px;
-    font-size: 16px;
+/* Medium screens */
+@media (--medium-up) {
+    body[location='resume'] {
+        .item {
+            grid-template-columns: 1fr auto;
+        }
+    }
 }
 
-body[location='resume'] section h3 {
-    font-size: 16px;
+/* Large screens */
+@media (--large-up) {
+    body[location='resume'] {
+        section.header p {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
 }
-
-body[location='resume'] .item {
-    padding: 8px 0px;
-}
-
-body[location='resume'] .item_heading {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;/* Distributes space: left item expands, right hugs edge */
-    align-items: baseline;/* Keeps text lines aligned vertically */
-}
-
-body[location='resume'] .item_heading h3 {
-    flex: 1;  /* Makes "College, Location" expand to fill left space, creating the gap */
-    margin-right: 16px;  /* Optional: Extra buffer before the date if needed */
-}
-
-body[location='resume'] .duration {
-    white-space: nowrap;  /* Prevents "Graduation Year" from wrapping */
-    font-style: italic;  /* Optional: Makes date stand out, like in pro resumes */
-}
-
-
