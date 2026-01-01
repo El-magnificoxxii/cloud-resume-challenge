@@ -1,10 +1,13 @@
 import React from "react";
 import 'css/pages/home.css'
+import abdullateef_oni from 'images/abdullateefoni.jpg'
 
 export default function HomePage() {
   return (
     <>
-        home page
+        <div className="profile_picture">
+          <img src={abdullateef_oni} />
+        </div>
     </>
   )
 }
