@@ -5,6 +5,7 @@ import Layout from './Layout.jsx'
 import HomePage from 'pages/HomePage'
 import ResumePage from 'pages/ResumePage'
 import ProjectsPage from 'pages/ProjectsPage'
+import ProjectPage from 'pages/ProjectPage'
 
 
 createRoot(document.querySelector('main')).render(
@@ -14,6 +15,7 @@ createRoot(document.querySelector('main')).render(
         <Route path="/" element={<HomePage />} />
         <Route path="/resume" element={<ResumePage />} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/projects/:id" element={<ProjectPage />} />
       </Route>
     </Routes>
 

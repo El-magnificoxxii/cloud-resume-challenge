@@ -1,0 +1,100 @@
+body[location='projects'] {
+ article {
+    background: transparent;     /* Let the page background show through */
+    /* OR completely remove the background rule if you prefer */
+    padding: 0;                  /* Optional: remove extra padding from article */
+  }
+  .projects {
+    display: flex;
+    flex-direction: column;                
+    padding: 40px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 32px; /* Nice spacing between cards */
+    
+  }
+
+  .project_item {
+    display: flex;
+    flex-direction: row;          /* Text left, image right */
+    align-items: center;          /* Vertical center alignment */
+    gap: 40px;                    /* Space between text and image */
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+
+    :hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+    img {
+      width: 320px;
+      height: 200px;
+      object-fit: cover;            /* Ensures consistent thumbnail look */
+      border-radius: 12px;
+      flex-shrink: 0;               /* Prevents image from shrinking */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .project_info {
+      flex: 1;                      /* Takes up remaining space */
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        color: #222;
+      }
+
+      p {
+        margin: 0;
+        color: #444;
+        line-height: 1.6em;
+      }
+
+      a {
+        align-self: flex-start;
+        background: #000;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    }
+
+  }
+
+  
+
+  
+  
+
+
+ 
+  /* Mobile responsiveness - stack vertically */
+  @media (max-width: 868px) {
+    .project_item {
+      flex-direction: column;
+      text-align: center;
+      gap: 24px;
+    }
+
+    img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+    }
+
+    a {
+      align-self: center;
+    }
+  }
+}

@@ -45,6 +45,10 @@ header nav {
 header nav a {
     padding: 24px;
     color: rgb(255,255,255);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
 }
 
 header nav a.active {
