@@ -24,7 +24,6 @@ body[location='projects'] {
     border-radius: 16px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
-
     :hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
@@ -54,20 +53,7 @@ body[location='projects'] {
         line-height: 1.6em;
       }
 
-      a {
-        align-self: flex-start;
-        background: #000;
-        color: white;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: background 0.3s;
-        text-decoration: none;
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
+      
     }
 
   }
@@ -85,6 +71,13 @@ body[location='projects'] {
       flex-direction: column;
       text-align: center;
       gap: 24px;
+      img {
+        width: 100%;                  /* Full width */
+        max-width: 100%;              /* Crucial: prevents overflow beyond card */
+        height: auto;                 /* Maintain aspect ratio */
+        border-radius: 12px;          /* Keep rounded corners */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Keep shadow */
+      }
     }
 
     img {

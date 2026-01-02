@@ -65,6 +65,26 @@ li {
     padding-bottom: 2px;
 }
 
+.bttn {
+    align-self: flex-start;
+    background: #000;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.3s;
+    text-decoration: none;
+    display: inline-flex;      /* New: helps with icon alignment */
+    align-items: center;       /* New: vertically centers icon and text */
+    gap: 8px;                  /* New: space between icon and text */
+    margin-bottom: 10px;       /* ← THIS creates space below the button */
+    &:hover {
+        text-decoration: underline;
+      }
+}
+
+      
+
 div.content_wrap {
     height: 100%;
     width: 100%;

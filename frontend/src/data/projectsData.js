@@ -19,19 +19,8 @@ const projectsData = [
         handle: "azure finops power bi dashboard",
         thumbnail: placeholder,
         description: lorem
-    },
-    {
-        name: "Azure IIS Hosting with Application Gateway",
-        handle: "hosting multiple iis websites on azure using application gateway and https",
-        thumbnail: placeholder,
-        description: lorem
-    },
-    {
-        name: "Azure FinOps Power BI Dashboard",
-        handle: "azure finops power bi dashboard",
-        thumbnail: placeholder,
-        description: lorem
     }
+   
 ]
 
 export default projectsData;
