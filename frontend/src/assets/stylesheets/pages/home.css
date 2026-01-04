@@ -1,0 +1,52 @@
+body[location='home'] {
+    article {
+    padding: 20px;                    /* Less inner white space */
+    max-width: 800px;                 /* Narrower card – adjust to taste */
+    border-radius: 16px;              /* Softer corners */
+    
+}
+    .intro_video {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Keeps it near the top */
+        
+        
+        
+    }
+
+    .intro_video img {
+        max-width: 1000px;          /* Adjust this for size: 400-500px range works best */
+        width: 100%;               /* Responsive on mobile */
+        height: auto;
+        border-radius: 12px;       /* Soft rounded corners */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); /* Gentle drop shadow */
+        box-sizing: border-box;
+        object-fit: cover;        /* Clean cropping if needed */
+        object-position: center top; /* Focuses on face/head */
+    }
+
+    /* Keep your .posts styles */
+    .posts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 2rem;
+      
+        .post_item {
+            color: rgb(0,0,0);
+            display: flex;
+            flex-direction: row;
+            text-decoration: none;
+            gap: 8px;
+            .name {
+                order: 2;
+            }
+             .date {
+                order: 1;
+            }
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
