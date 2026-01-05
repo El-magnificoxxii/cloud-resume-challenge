@@ -7,6 +7,7 @@ import PostItem from "comps/PostItem"
 export default function HomePage() {
   return (
     <>
+        <h1 className='fancy'>Abdullateef Oni's Blog</h1>
         <div className="intro_video">
           <img src={abdullateef_oni} />
         </div>

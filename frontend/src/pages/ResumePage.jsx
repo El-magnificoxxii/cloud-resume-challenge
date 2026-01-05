@@ -10,6 +10,7 @@ import resumeData from "data/resumeData";
 export default function ResumePage() {
   return (
     <>
+      <h1 className='fancy'>Abdullateef Oni's Resume</h1>
       <ResumeHeader person={resumeData.person} />
 
       {resumeData.sections.map(section => (

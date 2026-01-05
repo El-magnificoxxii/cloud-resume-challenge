@@ -2,9 +2,9 @@ body[location='home'] {
     article {
     padding: 20px;                    /* Less inner white space */
     max-width: 800px;                 /* Narrower card – adjust to taste */
-    border-radius: 16px;              /* Softer corners */
-    
-}
+    border-radius: 16px;              /* Softer corners */ 
+    }
+
     .intro_video {
         display: flex;
         justify-content: center;

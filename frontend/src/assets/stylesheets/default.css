@@ -18,6 +18,14 @@ h1,h2,h3,h4,h5 {
     margin: 0px;
 }
 
+h1.fancy {
+        text-align: center;
+        font-family: "Germania One", system-ui;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 50px    
+}
+
 p {
     margin: 0px;
 }
