@@ -3,21 +3,30 @@ import { Outlet, NavLink, useLocation } from "react-router-dom";
 import Header from "comps/Header";
 import 'css/default.css'
 import 'css/pygments.css'
+import 'css/markdown.css'
 
 
 export default function Layout() {
   const location = useLocation();
+  const path = location.pathname;
 
   useEffect(() => {
     let pageName = "home";
 
-    if (location.pathname === "/") {
+    if (path === "/") {
       pageName = "home";
-    } else if (location.pathname === "/resume") {
+    } else if (path === "/resume") {
       pageName = "resume";
-    } else if (location.pathname === "/projects") {
+    } else if (path === "/projects") {
       pageName = "projects";
+    } else if (/^\/projects\/[^/]+$/.test(path)) {
+      // Matches /projects/:handle
+      pageName = "project";
+    } else if (/^\/blog\/\d{4}-\d{2}-\d{2}\/[^/]+$/.test(path)) {
+      // Matches /blog/YYYY-MM-DD/:handle
+      pageName = "blog_post";
     }
+
 
     document.body.setAttribute("location", pageName);
 

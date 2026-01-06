@@ -2,13 +2,38 @@ body[location='home'] {
     article {
     padding: 20px;                    /* Less inner white space */
     max-width: 800px;                 /* Narrower card – adjust to taste */
-    border-radius: 16px;              /* Softer corners */ 
+    border-radius: 16px;              /* Softer corners */
+   
     }
+
+    .links  {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 16px;
+        padding-top: 10px;
+        a {
+        background: rgb(0,0,0);
+        color: rgb(255,255,255);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 999px;
+
+        span.name {
+            display: none;
+        }  
+    }
+}
+
 
     .intro_video {
         display: flex;
         justify-content: center;
         align-items: flex-start; /* Keeps it near the top */
+       
         
         
         
@@ -29,8 +54,8 @@ body[location='home'] {
     .posts {
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        margin-top: 2rem;
+        gap: 12px;
+        margin-top: 0.5rem;
       
         .post_item {
             color: rgb(0,0,0);
@@ -40,6 +65,7 @@ body[location='home'] {
             gap: 8px;
             .name {
                 order: 2;
+                font-weight: 600;
             }
              .date {
                 order: 1;
