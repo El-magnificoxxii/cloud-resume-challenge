@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import Header from "comps/Header";
 import 'css/default.css'
+import 'css/pygments.css'
 
 
 export default function Layout() {
