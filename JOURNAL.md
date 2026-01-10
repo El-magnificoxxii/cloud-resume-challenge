@@ -54,8 +54,6 @@ Vite/Oxc error: `Expected > but found <` in `main.jsx:13:8` — the nested `<Rou
   <Route path="/" element={<ResumePage />} />    <!-- problem here -->
 </Route>
 
-
-
 **Root Cause**  
 My opening `<Route>` tag had an extra closing `</Route>` in the wrong place, causing a syntax error.
 
@@ -72,7 +70,7 @@ Removed the misplaced closing tag on the parent Route — once fixed, the layout
 I stored blog posts as Markdown files for easy writing, then used a Python script to convert them to HTML snippets for dynamic injection into the site.
 
 **Problem**  
-Fenced code blocks (e.g., ```python) rendered as plain text paragraphs instead of proper `<pre><code>` blocks.
+Fenced code blocks (e.g., ```python
 
 **Root Cause**  
 - Default Markdown parser didn't enable extensions for fenced code or other advanced features.  
@@ -179,6 +177,13 @@ Forgot why certain decisions were made when revisiting code weeks later.
 **Key Takeaways**  
 - Writing forces clarity and compounds knowledge.  
 - Journals turn projects into long-term assets.
+
+
+### 9. My H1.fancy didn't fit on smaller pages
+
+my h1 were out of place on smaller screen, i introduced media for smaller screens to correct this issue through the help of AI: https://grok.com/share/c2hhcmQtMw_eff35b7d-a7d0-4e1a-b8ec-b78d054b4d3d
+see the previous image:![image on small screen](frontend/src/assets/images/mediascreen.png)
+
 
 ### Final Reflection
 

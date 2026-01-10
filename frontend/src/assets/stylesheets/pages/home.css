@@ -1,77 +1,130 @@
+/* Mobile-first adjustments for home page – upper section only, image stays original */
 body[location='home'] {
-    article {
-    padding: 20px;                    /* Less inner white space */
-    max-width: 800px;                 /* Narrower card – adjust to taste */
-    border-radius: 16px;              /* Softer corners */
-    }
+  article {
+    padding: 16px 12px;           /* better mobile padding */
+    max-width: 100%;
+    margin: 0 auto;
+    background: rgb(255,255,255);
+    border-radius: 12px;
+  }
 
-    .links  {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 16px;
-        padding-top: 10px;
-        a {
-        background: rgb(0,0,0);
-        color: rgb(255,255,255);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 45px;
-        height: 45px;
-        border-radius: 999px;
+  h1.fancy {
+    font-size: 2.6rem;            /* ≈42px – much better on phones than 55px */
+    line-height: 1.1;
+    margin-bottom: 0.6em;
+    text-align: center;
+  }
 
-        span.name {
-            display: none;
-        }  
+  .intro_video {
+    margin: 1.2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  /* ── Image styling stays EXACTLY as in your original code ── */
+  .intro_video img {
+    max-width: 1000px;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 24px;                    /* improved spacing for mobile */
+    padding-top: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .links a {
+    width: 54px;                  /* better touch targets */
+    height: 54px;
+    border-radius: 999px;
+    background: rgb(0,0,0);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+  }
+
+  .links a:hover,
+  .links a:focus {
+    transform: scale(1.15);
+  }
+
+  .links span.name {
+    display: none;
+  }
+
+  /* Posts section: unchanged from your original */
+  .posts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0.5rem;
+  }
+
+  .post_item {
+    color: rgb(0,0,0);
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    gap: 8px;
+    .name {
+      order: 2;
+      font-weight: 600;
     }
+    .date {
+      order: 1;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
-
-    .intro_video {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start; /* Keeps it near the top */
-       
-        
-        
-        
+/* Very small phones – only tweak upper part, image stays original */
+@media (max-width: 400px) {
+  body[location='home'] {
+    article {
+      padding: 12px 10px;
     }
 
-    .intro_video img {
-        max-width: 1000px;          /* Adjust this for size: 400-500px range works best */
-        width: 100%;               /* Responsive on mobile */
-        height: auto;
-        border-radius: 12px;       /* Soft rounded corners */
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); /* Gentle drop shadow */
-        box-sizing: border-box;
-        object-fit: cover;        /* Clean cropping if needed */
-        object-position: center top; /* Focuses on face/head */
+    h1.fancy {
+      font-size: 2.2rem;
     }
 
-    /* Keep your .posts styles */
-    .posts {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 0.5rem;
-      
-        .post_item {
-            color: rgb(0,0,0);
-            display: flex;
-            flex-direction: row;
-            text-decoration: none;
-            gap: 8px;
-            .name {
-                order: 2;
-                font-weight: 600;
-            }
-             .date {
-                order: 1;
-            }
-            &:hover {
-                text-decoration: underline;
-            }
-        }
+    .links {
+      gap: 18px;
     }
+
+    .links a {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}
+
+/* Progressive enhancement for tablets & larger (keeps your desktop good) */
+@media (min-width: 768px) {
+  body[location='home'] {
+    article {
+      padding: 32px;
+      max-width: 820px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    h1.fancy {
+      font-size: 3.4rem;          /* closer to your original big size */
+    }
+  }
 }

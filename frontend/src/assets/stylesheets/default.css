@@ -120,13 +120,19 @@ article {
 
 
 
+/* Mobile-only fixes using your existing breakpoint */
 
 @media (--small-only) {
-    body[location='resume'] {
-        article {
-        }
-    }
+  h1.fancy {
+    font-size: 2.4rem;            /* ≈38–40px – comfortable & readable on phones */
+    line-height: 1.08;
+    margin: 0.6em 0 1em;
+    text-align: center;
+    word-break: break-word;       /* helps with long names like "Abdullateef" */
+    hyphens: auto;                /* optional: nicer word breaks */
+  }
 }
+
 
 @media (--medium-up) {
     body[location='resume'] {
