@@ -233,7 +233,7 @@ Standardized on storage_account_name in vars: and all tasks:
 Assigned RBAC:
 ```bash
 az role assignment create \
-  --assignee admin@testteach.onmicrosoft.com \
+  --assignee xxx.onmicrosoft.com \
   --role "Storage Blob Data Contributor" \
   --scope /subscriptions/.../storageAccounts/abdullateefoni346088
 
