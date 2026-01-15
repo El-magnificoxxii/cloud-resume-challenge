@@ -1,0 +1,144 @@
+---
+- name: Build Vite App and Upload to Azure Blob Storage
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: /workspaces/cloud-resume-challenge/azure/playbooks/ansible-azure-venv/bin/python
+    resource_group: cloud-resume-challenge
+    location: ukwest
+    storage_account_name: abdullateefoni346088
+    container: $web
+    project_root: "{{ playbook_dir | realpath }}/../.."
+    frontend_dir: "{{ project_root }}/frontend"
+    build_dir: "{{ frontend_dir }}/dist"
+
+  tasks:
+    - name: Install Node dependencies (clean, reproducible)
+      community.general.npm:
+        path: "{{ frontend_dir }}"
+        state: present
+        production: false
+        ci: true
+
+    - name: Build Vite app
+      ansible.builtin.shell: npm run build
+      args:
+        chdir: "{{ frontend_dir }}"
+
+    - name: Confirm build dir exists
+      ansible.builtin.stat:
+        path: "{{ build_dir }}"
+      register: build_stat
+
+    - name: Fail if build output missing
+      ansible.builtin.fail:
+        msg: "Build dir {{ build_dir }} not found. Check build step or paths."
+      when: not build_stat.stat.exists
+
+    # ────────────────────────────────────────────────
+    # Upload /assets directory (long cache – immutable)
+    # ────────────────────────────────────────────────
+    - name: Upload /assets directory (long cache)
+      ansible.builtin.command: >
+        az storage blob upload-batch
+        --account-name {{ storage_account_name }}
+        --destination '$web'
+        --source "{{ build_dir }}/assets"
+        --destination-path assets
+        --overwrite
+        --auth-mode login
+      register: upload_assets
+      changed_when: upload_assets.rc == 0
+
+    - name: Set long cache on uploaded assets
+      ansible.builtin.command: >
+        az storage blob update
+        --account-name {{ storage_account_name }}
+        --container-name '$web'
+        --name "assets/{{ item }}"
+        --content-cache-control "public, max-age=31536000, immutable"
+        --auth-mode login
+      loop: "{{ lookup('fileglob', build_dir + '/assets/*', wantlist=True) | map('basename') | list }}"
+      loop_control:
+        label: "{{ item }}"
+      when: upload_assets.rc == 0
+      changed_when: false
+
+    # ────────────────────────────────────────────────
+    # Upload index.html (no-store)
+    # ────────────────────────────────────────────────
+    - name: Upload index.html (no-store)
+      ansible.builtin.command:
+        argv:
+          - az
+          - storage
+          - blob
+          - upload
+          - --account-name
+          - "{{ storage_account_name }}"
+          - --container-name
+          - '$web'
+          - --name
+          - index.html
+          - --file
+          - "{{ build_dir }}/index.html"
+          - --overwrite
+          - --auth-mode
+          - login
+          - --content-cache-contro
+          - no-store
+          - --content-type
+          - text/html
+      register: upload_index
+      changed_when: upload_index.rc == 0
+
+    # ────────────────────────────────────────────────
+    # Upload all other top-level files (short cache)
+    # ────────────────────────────────────────────────
+    - name: Find top-level files (exclude assets/ and index.html)
+      ansible.builtin.find:
+        paths: "{{ build_dir }}"
+        file_type: file
+        recurse: false
+        excludes:
+          - "index.html"
+          - "assets"
+      register: top_level_files
+
+    - name: Upload top-level files (short cache)
+      ansible.builtin.command:
+        argv:
+          - az
+          - storage
+          - blob
+          - upload
+          - --account-name
+          - "{{ storage_account_name }}"
+          - --container-name
+          - '$web'
+          - --name
+          - "{{ item.path | basename }}"
+          - --file
+          - "{{ item.path }}"
+          - --overwrite
+          - --auth-mode
+          - login
+          - --cache-control
+          - "public, max-age=300"
+      loop: "{{ top_level_files.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      register: upload_misc
+      changed_when: upload_misc.rc == 0
+
+    # ────────────────────────────────────────────────
+    # Summary
+    # ────────────────────────────────────────────────
+    - name: Upload Summary
+      ansible.builtin.debug:
+        msg:
+          - "Assets uploaded: {{ upload_assets.rc == 0 }}"
+          - "index.html uploaded: {{ upload_index.rc == 0 }}"
+          - "Other files uploaded: {{ top_level_files.files | length }}"

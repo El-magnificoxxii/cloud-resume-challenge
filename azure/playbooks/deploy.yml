@@ -1,0 +1,47 @@
+---
+- name: Deploy Azure Storage Account from Bicep (existing RG)
+  hosts: localhost
+  connection: local
+  vars:
+    ansible_python_interpreter: /workspaces/cloud-resume-challenge/azure/playbooks/ansible-azure-venv/bin/python
+    resource_group: cloud-resume-challenge
+    location: ukwest
+    storage_account_name: abdullateefoni346088
+    container_name: $web
+    deployment_name: "deploy-storage-{{ ansible_date_time.date | regex_replace('-', '') }}{{ ansible_date_time.time | replace(':', '') }}"
+
+  tasks:
+    - name: Compile Bicep to ARM JSON
+      ansible.builtin.command: >
+        az bicep build --file ../main.bicep --outfile compiled.json
+      args:
+        chdir: "{{ playbook_dir }}"
+      changed_when: false
+      register: bicep_build
+      failed_when: bicep_build.rc != 0
+
+    - name: Read compiled ARM template (for debug only, not needed for CLI deploy)
+      ansible.builtin.set_fact:
+        arm_template: "{{ lookup('ansible.builtin.file', playbook_dir + '/compiled.json') | from_json }}"
+
+    - name: Deploy storage account using Azure CLI (bypass module import issue)
+      ansible.builtin.command: >
+        az deployment group create
+        --resource-group {{ resource_group }}
+        --name {{ deployment_name }}
+        --template-file compiled.json
+        --parameters location={{ location }} storage_account_name={{ storage_account_name }} container_name={{ container_name }}
+        --output json
+      args:
+        chdir: "{{ playbook_dir }}"
+      register: deployment_result
+      changed_when: "'Succeeded' in deployment_result.stdout"
+
+    - name: Show deployment output
+      ansible.builtin.debug:
+        msg: "{{ deployment_result.stdout | from_json | json_query('properties.provisioningState') }}"
+
+    - name: Remove compiled JSON file
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/compiled.json"
+        state: absent
