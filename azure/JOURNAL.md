@@ -265,3 +265,50 @@ Replaced `--cache-control` with `--content-cache-control` in the index.html task
 
 
 
+# January 15–16, 2026 – Adding Managed SSL + Custom Domain (abdullateefoniresume.online) via Azure DNS
+
+### Goal
+Attach custom domain `abdullateefoniresume.online` to the CDN/Front Door setup with a **free Azure-managed SSL certificate** (auto-renewing), while managing DNS records in **Azure DNS**.
+
+### Initial Approach (Classic Azure CDN)
+Started with classic Azure CDN (Standard_Verizon SKU) + custom domain + managed certificate.
+
+**Initial Bicep snippet attempted**:
+```bicep
+resource cdnCustomDomain 'Microsoft.Cdn/profiles/endpoints/customDomains@2024-02-01' = {
+  name: replace(custom_domain_name, '.', '-')
+  parent: endpoint
+  properties: {
+    hostName: custom_domain_name
+    tlsSettings: {
+      certificateType: 'ManagedCertificate'
+      minimumTlsVersion: 'TLS12'
+    }
+  }
+}
+
+### Issues Encountered (Classic CDN phase)
+
+1. **Location validation failure**  
+   - **Error code**: `LocationNotAvailableForResourceType`  
+   - **Message**: `'ukwest' is not available for resource type 'Microsoft.Cdn/profiles'`  
+   - **Allowed regions**: `global, australiaeast, australiasoutheast, brazilsouth, canadacentral, canadaeast, centralindia, centralus, eastasia, eastus, eastus2, japaneast, japanwest, northcentralus, northeurope, southcentralus, southindia, southeastasia, westeurope, westindia, westus, westcentralus` (no `ukwest`)  
+   - **Root cause**: Classic CDN profiles are **global resources**, not regional — they can only be deployed in `'global'` or specific allowed regions.  
+   - **Solution**: Changed CDN profile & endpoint `location` to `'global'`.
+
+2. **Verizon SKU deprecation**  
+   - **Error**: `"Verizon SKU is not supported anymore."`  
+   - **Root cause**: Azure deprecated new creations of `Standard_Verizon` (and Premium_Verizon) classic CDN profiles.  
+   - **Solution**: Switched to `Standard_Microsoft` SKU.
+
+3. **Public access blocked on storage account**  
+   - **Error**: `"Public access is not permitted on this storage account."`  
+   - **Root cause**: `allowBlobPublicAccess` was `false` (or unset) at the storage account level, which blocks container-level `publicAccess: 'Blob'` even when explicitly set.  
+   - **Solution**: Set `allowBlobPublicAccess: true` on the storage account (required for CDN to pull content anonymously from the `$web` container).
+
+4. **Microsoft classic CDN also deprecated**  
+   - **Error**: `"Azure CDN from Microsoft (classic) no longer support new profile creation."`  
+   - **Root cause**: Microsoft fully deprecated **classic CDN** (all SKUs: Verizon, Microsoft, etc.) for new profile creations as of late 2025/early 2026.  
+   - **Solution**: Migrated to **Azure Front Door** (the modern replacement for classic CDN).
+
+

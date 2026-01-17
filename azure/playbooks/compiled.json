@@ -1,0 +1,168 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "7249638569409012099"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "ukwest",
+      "metadata": {
+        "description": "Azure region for regional resources (storage)"
+      }
+    },
+    "cdn_location": {
+      "type": "string",
+      "defaultValue": "global",
+      "metadata": {
+        "description": "Location for CDN – must be \"global\""
+      }
+    },
+    "storage_account_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the storage account (must be globally unique)"
+      }
+    },
+    "container_name": {
+      "type": "string",
+      "defaultValue": "$web",
+      "metadata": {
+        "description": "Name of the blob container for static website (usually $web)"
+      }
+    },
+    "custom_domain_name": {
+      "type": "string",
+      "defaultValue": "abdullateefoniresume.online",
+      "metadata": {
+        "description": "Your custom domain name (must exist in Azure DNS)"
+      }
+    }
+  },
+  "variables": {
+    "cdn_profile_name": "[format('cdn-{0}', uniqueString(resourceGroup().id))]",
+    "cdn_endpoint_name": "[format('endpoint-{0}', uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('storage_account_name')]",
+      "location": "[parameters('location')]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "allowBlobPublicAccess": true,
+        "minimumTlsVersion": "TLS1_2",
+        "supportsHttpsTrafficOnly": true,
+        "staticWebsite": {
+          "enabled": true,
+          "indexDocument": "index.html"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/default/{1}', parameters('storage_account_name'), parameters('container_name'))]",
+      "properties": {
+        "publicAccess": "Blob"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2024-02-01",
+      "name": "[variables('cdn_profile_name')]",
+      "location": "[parameters('cdn_location')]",
+      "sku": {
+        "name": "Standard_Microsoft"
+      }
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/endpoints",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}', variables('cdn_profile_name'), variables('cdn_endpoint_name'))]",
+      "location": "[parameters('cdn_location')]",
+      "properties": {
+        "originHostHeader": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2023-05-01').primaryEndpoints.blobHost]",
+        "isHttpAllowed": false,
+        "isHttpsAllowed": true,
+        "queryStringCachingBehavior": "IgnoreQueryString",
+        "contentTypesToCompress": [
+          "text/plain",
+          "text/html",
+          "text/css",
+          "application/javascript",
+          "application/x-javascript",
+          "application/json"
+        ],
+        "isCompressionEnabled": true,
+        "origins": [
+          {
+            "name": "storageOrigin",
+            "properties": {
+              "hostName": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2023-05-01').primaryEndpoints.blobHost]"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles', variables('cdn_profile_name'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/endpoints/customDomains",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}/{2}', variables('cdn_profile_name'), variables('cdn_endpoint_name'), replace(parameters('custom_domain_name'), '.', '-'))]",
+      "properties": {
+        "hostName": "[parameters('custom_domain_name')]",
+        "tlsSettings": {
+          "certificateType": "ManagedCertificate",
+          "minimumTlsVersion": "TLS12"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles/endpoints', variables('cdn_profile_name'), variables('cdn_endpoint_name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/dnsZones/CNAME",
+      "apiVersion": "2018-05-01",
+      "name": "[format('{0}/{1}', parameters('custom_domain_name'), '@')]",
+      "properties": {
+        "TTL": 3600,
+        "CNAMERecord": {
+          "cname": "[reference(resourceId('Microsoft.Cdn/profiles/endpoints', variables('cdn_profile_name'), variables('cdn_endpoint_name')), '2024-02-01').hostName]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles/endpoints', variables('cdn_profile_name'), variables('cdn_endpoint_name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "storageBlobEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2023-05-01').primaryEndpoints.blob]"
+    },
+    "cdnEndpointHostname": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Cdn/profiles/endpoints', variables('cdn_profile_name'), variables('cdn_endpoint_name')), '2024-02-01').hostName]"
+    },
+    "customDomainUrl": {
+      "type": "string",
+      "value": "[format('https://{0}', parameters('custom_domain_name'))]"
+    }
+  }
+}
