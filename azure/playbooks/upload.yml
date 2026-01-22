@@ -5,7 +5,7 @@
   gather_facts: false
 
   vars:
-    ansible_python_interpreter: /workspaces/cloud-resume-challenge/azure/playbooks/ansible-azure-venv/bin/python
+    #ansible_python_interpreter: /workspaces/cloud-resume-challenge/azure/playbooks/ansible-azure-venv/bin/python
     resource_group: cloud-resume-challenge
     location: ukwest
     storage_account_name: abdullateefoni346088
@@ -45,7 +45,7 @@
         az storage blob upload-batch
         --account-name {{ storage_account_name }}
         --destination '$web'
-        --source "{{ build_dir }}/assets"
+        --source "C:\\Users\\ONI ABDULLATEEF\\Desktop\\cloud-resume-challenge\\frontend\\dist\\assets"
         --destination-path assets
         --overwrite
         --auth-mode login
@@ -83,7 +83,7 @@
           - --name
           - index.html
           - --file
-          - "{{ build_dir }}/index.html"
+          - "C:\\Users\\ONI ABDULLATEEF\\Desktop\\cloud-resume-challenge\\frontend\\dist\\index.html"
           - --overwrite
           - --auth-mode
           - login

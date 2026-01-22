@@ -1,0 +1,205 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "8022515953905312892"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region for regional resources (storage). AFD is global."
+      }
+    },
+    "storage_account_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account name – must be globally unique (3–24 lowercase letters + digits)"
+      }
+    },
+    "custom_domain_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Your custom domain (e.g., abdullateefoniresume.online or www.abdullateefoniresume.online)"
+      }
+    },
+    "dns_zone_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of your existing Azure DNS zone that hosts the domain"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('storage_account_name')]",
+      "location": "[parameters('location')]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "allowBlobPublicAccess": true,
+        "minimumTlsVersion": "TLS1_2",
+        "supportsHttpsTrafficOnly": true
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('storage_account_name'), 'default')]",
+      "properties": {
+        "staticWebsite": {
+          "indexDocument": "index.html",
+          "error404Document": "index.html"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2024-02-01",
+      "name": "[format('fd-{0}', uniqueString(resourceGroup().id))]",
+      "location": "global",
+      "sku": {
+        "name": "Standard_AzureFrontDoor"
+      }
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/afdEndpoints",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}', format('fd-{0}', uniqueString(resourceGroup().id)), format('fd-endpoint-{0}', uniqueString(resourceGroup().id)))]",
+      "location": "global",
+      "properties": {
+        "enabledState": "Enabled"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles', format('fd-{0}', uniqueString(resourceGroup().id)))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/originGroups",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}', format('fd-{0}', uniqueString(resourceGroup().id)), 'storageOriginGroup')]",
+      "properties": {
+        "loadBalancingSettings": {
+          "sampleSize": 4,
+          "successfulSamplesRequired": 3
+        },
+        "healthProbeSettings": {
+          "probePath": "/index.html",
+          "probeRequestType": "HEAD",
+          "probeProtocol": "Https",
+          "probeIntervalInSeconds": 100
+        },
+        "sessionAffinityState": "Disabled"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles', format('fd-{0}', uniqueString(resourceGroup().id)))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/originGroups/origins",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}/{2}', format('fd-{0}', uniqueString(resourceGroup().id)), 'storageOriginGroup', 'storageOrigin')]",
+      "properties": {
+        "hostName": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2023-05-01').primaryEndpoints.web, 'https://', ''), '/', '')]",
+        "originHostHeader": "[replace(replace(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2023-05-01').primaryEndpoints.web, 'https://', ''), '/', '')]",
+        "httpPort": 80,
+        "httpsPort": 443,
+        "priority": 1,
+        "weight": 1000,
+        "enabledState": "Enabled"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles/originGroups', format('fd-{0}', uniqueString(resourceGroup().id)), 'storageOriginGroup')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/customDomains",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}', format('fd-{0}', uniqueString(resourceGroup().id)), replace(parameters('custom_domain_name'), '.', '-'))]",
+      "properties": {
+        "hostName": "[parameters('custom_domain_name')]",
+        "azureDnsZone": {
+          "id": "[resourceId('Microsoft.Network/dnsZones', parameters('dns_zone_name'))]"
+        },
+        "tlsSettings": {
+          "certificateType": "ManagedCertificate",
+          "minimumTlsVersion": "TLS12"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles', format('fd-{0}', uniqueString(resourceGroup().id)))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
+      "apiVersion": "2024-02-01",
+      "name": "[format('{0}/{1}/{2}', format('fd-{0}', uniqueString(resourceGroup().id)), format('fd-endpoint-{0}', uniqueString(resourceGroup().id)), 'defaultRoute')]",
+      "properties": {
+        "originGroup": {
+          "id": "[resourceId('Microsoft.Cdn/profiles/originGroups', format('fd-{0}', uniqueString(resourceGroup().id)), 'storageOriginGroup')]"
+        },
+        "supportedProtocols": [
+          "Http",
+          "Https"
+        ],
+        "patternsToMatch": [
+          "/*"
+        ],
+        "forwardingProtocol": "MatchRequest",
+        "linkToDefaultDomain": "Disabled",
+        "httpsRedirect": "Enabled",
+        "customDomains": [
+          {
+            "id": "[resourceId('Microsoft.Cdn/profiles/customDomains', format('fd-{0}', uniqueString(resourceGroup().id)), replace(parameters('custom_domain_name'), '.', '-'))]"
+          }
+        ],
+        "cacheConfiguration": {
+          "queryStringCachingBehavior": "IgnoreQueryString",
+          "compressionSettings": {
+            "contentTypesToCompress": [
+              "text/plain",
+              "text/html",
+              "text/css",
+              "application/javascript",
+              "application/x-javascript",
+              "application/json"
+            ],
+            "isCompressionEnabled": true
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Cdn/profiles/customDomains', format('fd-{0}', uniqueString(resourceGroup().id)), replace(parameters('custom_domain_name'), '.', '-'))]",
+        "[resourceId('Microsoft.Cdn/profiles/afdEndpoints', format('fd-{0}', uniqueString(resourceGroup().id)), format('fd-endpoint-{0}', uniqueString(resourceGroup().id)))]",
+        "[resourceId('Microsoft.Cdn/profiles/originGroups/origins', format('fd-{0}', uniqueString(resourceGroup().id)), 'storageOriginGroup', 'storageOrigin')]",
+        "[resourceId('Microsoft.Cdn/profiles/originGroups', format('fd-{0}', uniqueString(resourceGroup().id)), 'storageOriginGroup')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "storageBlobEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2023-05-01').primaryEndpoints.web]"
+    },
+    "frontDoorEndpointHostname": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Cdn/profiles/afdEndpoints', format('fd-{0}', uniqueString(resourceGroup().id)), format('fd-endpoint-{0}', uniqueString(resourceGroup().id))), '2024-02-01').hostName]"
+    },
+    "customDomainUrl": {
+      "type": "string",
+      "value": "[format('https://{0}', parameters('custom_domain_name'))]"
+    }
+  }
+}

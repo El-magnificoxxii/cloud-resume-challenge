@@ -1,14 +1,15 @@
 ---
-- name: Deploy Azure Storage Account from Bicep (existing RG)
+- name: Deploy Azure Storage Account + Front Door + DNS ALIAS from Bicep
   hosts: localhost
   connection: local
   vars:
-    ansible_python_interpreter: /workspaces/cloud-resume-challenge/azure/playbooks/ansible-azure-venv/bin/python
+    #ansible_python_interpreter: /usr/bin/python3   # remove if not needed
     resource_group: cloud-resume-challenge
     location: ukwest
-    storage_account_name: abdullateefoni346088
-    container_name: $web
-    deployment_name: "deploy-storage-{{ ansible_date_time.date | regex_replace('-', '') }}{{ ansible_date_time.time | replace(':', '') }}"
+    storage_account_name: abdullateefoni349900   # ← temporary changeabdullateefoni346088     # make sure it's unique
+    custom_domain_name: abdullateefoniresume.online
+    dns_zone_name: abdullateefoniresume.online     # ← NEW: required for ALIAS record
+    deployment_name: "deploy-full-{{ ansible_facts.date_time.date | regex_replace('-', '') }}{{ ansible_facts.date_time.time | replace(':', '') }}"
 
   tasks:
     - name: Compile Bicep to ARM JSON
@@ -20,28 +21,39 @@
       register: bicep_build
       failed_when: bicep_build.rc != 0
 
-    - name: Read compiled ARM template (for debug only, not needed for CLI deploy)
-      ansible.builtin.set_fact:
-        arm_template: "{{ lookup('ansible.builtin.file', playbook_dir + '/compiled.json') | from_json }}"
-
-    - name: Deploy storage account using Azure CLI (bypass module import issue)
+    - name: Deploy full infrastructure (storage + Front Door + DNS ALIAS)
       ansible.builtin.command: >
         az deployment group create
         --resource-group {{ resource_group }}
         --name {{ deployment_name }}
         --template-file compiled.json
-        --parameters location={{ location }} storage_account_name={{ storage_account_name }} container_name={{ container_name }}
+        --parameters
+          location={{ location }}
+          storage_account_name={{ storage_account_name }}
+          custom_domain_name={{ custom_domain_name }}
+          dns_zone_name={{ dns_zone_name }}
         --output json
       args:
         chdir: "{{ playbook_dir }}"
       register: deployment_result
       changed_when: "'Succeeded' in deployment_result.stdout"
+      failed_when: deployment_result.rc != 0
 
-    - name: Show deployment output
+    - name: Show deployment provisioning state
       ansible.builtin.debug:
         msg: "{{ deployment_result.stdout | from_json | json_query('properties.provisioningState') }}"
 
-    - name: Remove compiled JSON file
+    - name: Show useful outputs from deployment
+      ansible.builtin.debug:
+        msg:
+          - "Storage Blob Endpoint: {{ deployment_result.stdout | from_json | json_query('properties.outputs.storageBlobEndpoint.value') | default('Not available') }}"
+          - "Front Door Endpoint Hostname: {{ deployment_result.stdout | from_json | json_query('properties.outputs.frontDoorEndpointHostname.value') | default('Not available') }}"
+          - "Custom Domain URL: {{ deployment_result.stdout | from_json | json_query('properties.outputs.customDomainUrl.value') | default('Not available') }}"
+
+    - name: Remove temporary compiled JSON file
       ansible.builtin.file:
         path: "{{ playbook_dir }}/compiled.json"
         state: absent
+
+
+   
