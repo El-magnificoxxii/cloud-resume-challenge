@@ -311,4 +311,51 @@ resource cdnCustomDomain 'Microsoft.Cdn/profiles/endpoints/customDomains@2024-02
    - **Root cause**: Microsoft fully deprecated **classic CDN** (all SKUs: Verizon, Microsoft, etc.) for new profile creations as of late 2025/early 2026.  
    - **Solution**: Migrated to **Azure Front Door** (the modern replacement for classic CDN).
 
+# January 18–24, 2026 – Final Phase: Static Hosting, Upload, Cert Propagation, and Custom Domain Live
+### Issue: $web container not auto-created / static hosting disabled after multiple deploys
+
+- Portal → Storage → Configuration → Static website = Disabled
+- Upload failed with "container does not exist"
+- Redeploy (without delete) didn't enable it again
+
+### Root Cause
+
+- Bicep template included creating web container from storage account rather than automatically from static website
+- Azure auto-creates $webonly on initial account creation or manual portal enablement
+- Redeploy without deletion skips container creation
+
+### Solutions
+- i redeployed bicep template, this time i didnt add container resource, as it would be automatically created
+
+### Issue: $web container was empty,and after deploying frontdoor, url abdullateefoniesume.online was pointing to error 404
+
+### Solutions
+- i didnt redeploy upload.yml after deleting the previous container and creating a new container
+
+# Issue: Permissions during upload
+### Symptoms
+- "You do not have the required permissions... Storage Blob Data Contributor"
+
+### Root Cause
+
+```text
+ERROR:
+--auth-mode login requires explicit Storage Blob Data Contributor role on the storage account
+```
+### Solution
+
+- Assigned role in portal (IAM → + Add → Storage Blob Data Contributor → your user)
+Or fallback: --auth-mode key in upload tasks
+
+### Outcome
+
+- Upload succeeded after role assignment
+
+### Final Status – January 24, 2026
+
+- Site live: https://abdullateefoniresume.online (root domain + HTTPS padlock)
+- Storage endpoint: https://abdullateefoni346088.z35.web.core.windows.net/
+- Front Door default: fd-endpoint-prtqllz6hqg4a-hsduf2a7h7a8fda5.a02.azurefd.net
+- Pipeline: deploy.yml (infra + force-enable static hosting) + upload.yml (content)
+- Fully automated: No manual portal steps after final fixes
 
