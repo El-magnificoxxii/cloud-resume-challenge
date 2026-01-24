@@ -125,10 +125,6 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = {
 resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
   name: 'defaultRoute'
   parent: frontDoorEndpoint
-  dependsOn: [
-    origin
-    customDomain
-  ]
   properties: {
     originGroup: {
       id: originGroup.id

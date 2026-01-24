@@ -6,7 +6,7 @@
     #ansible_python_interpreter: /usr/bin/python3   # remove if not needed
     resource_group: cloud-resume-challenge
     location: ukwest
-    storage_account_name: abdullateefoni349900   # ← temporary changeabdullateefoni346088     # make sure it's unique
+    storage_account_name: abdullateefoni346088     # make sure it's unique
     custom_domain_name: abdullateefoniresume.online
     dns_zone_name: abdullateefoniresume.online     # ← NEW: required for ALIAS record
     deployment_name: "deploy-full-{{ ansible_facts.date_time.date | regex_replace('-', '') }}{{ ansible_facts.date_time.time | replace(':', '') }}"
@@ -55,5 +55,16 @@
         path: "{{ playbook_dir }}/compiled.json"
         state: absent
 
-
-   
+    - name: Enable static website hosting on storage account (force if needed)
+      ansible.builtin.command: >
+        az storage blob service-properties update
+        --account-name {{ storage_account_name }}
+        --static-website true
+        --index-document index.html
+        --404-document index.html
+        --auth-mode login
+      args:
+        chdir: "{{ playbook_dir }}"
+      register: static_enable_result
+      changed_when: static_enable_result.rc == 0
+      failed_when: static_enable_result.rc != 0 and 'already' not in static_enable_result.stderr | default('')
