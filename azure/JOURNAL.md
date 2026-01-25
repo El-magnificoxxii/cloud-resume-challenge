@@ -359,3 +359,11 @@ Or fallback: --auth-mode key in upload tasks
 - Pipeline: deploy.yml (infra + force-enable static hosting) + upload.yml (content)
 - Fully automated: No manual portal steps after final fixes
 
+
+### added www to recordset
+my url abdullateefoniesume.online was working however i noticed www. abdullateefoniresume.online was returning page not found
+
+### Solution
+i added www recordset in cname and directed it  to my frontdoor
+
+

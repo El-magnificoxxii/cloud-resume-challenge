@@ -10,6 +10,10 @@ param custom_domain_name string
 @description('Name of your existing Azure DNS zone that hosts the domain')
 param dns_zone_name string 
 
+param wwwDomainName string = 'www.${custom_domain_name}'
+
+
+
 // ────────────────────────────────────────────────
 // Storage Account + Static Website enabled
 // ────────────────────────────────────────────────
@@ -141,7 +145,10 @@ resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
     httpsRedirect: 'Enabled'
     customDomains: [
       {
-        id: customDomain.id
+        id: customDomain.id  // apex
+      }
+      {
+        id: wwwCustomDomain.id  // www
       }
     ]
     cacheConfiguration: {
@@ -157,6 +164,25 @@ resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
         ]
         isCompressionEnabled: true
       }
+    }
+  }
+}
+
+
+// ────────────────────────────────────────────────
+// www Custom Domain + Managed Certificate
+// ────────────────────────────────────────────────
+resource wwwCustomDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = {
+  name: replace(wwwDomainName, '.', '-')
+  parent: frontDoorProfile
+  properties: {
+    hostName: wwwDomainName
+    azureDnsZone: {
+      id: dnsZone.id
+    }
+    tlsSettings: {
+      certificateType: 'ManagedCertificate'
+      minimumTlsVersion: 'TLS12'
     }
   }
 }
