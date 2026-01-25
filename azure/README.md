@@ -98,3 +98,34 @@ az role assignment create \
   --scope /subscriptions/.../storageAccounts/abdullateefoni346088
 
 ```
+
+### To run scripts from the playbook
+
+```bash
+ansible-playbook purge.yml -vvv  # to purge frontdoor
+ansible-playbook deploy.yml -vvv # to deploy infrastructure in main.bicep
+ansible-playbook upload.yml -vvv # to upload files into storage container
+```
+### checking DNS resolution and ensuring apex is redirecting to frontdoor
+
+```bash
+curl -I https://abdullateefoniresume.online
+```
+
+
+```bash
+HTTP/2 200
+date: Sun, 25 Jan 2026 00:08:18 GMT
+content-type: text/html
+content-length: 773
+cache-control: no-store
+content-md5: Kzwxgf2uVnxxxxxxxxxxx==
+last-modified: Sat, 24 Jan 2026 15:44:55 GMT
+etag: xxxxxxxxxxxxxxxxxx
+x-ms-request-id: xxxxxxxxxxxxxxxxxx
+x-ms-version: 2018-03-28
+x-azure-ref: 20260125T000818Z-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+x-fd-int-roxy-purgeid: 1
+x-cache: PRIVATE_NOSTORE
+accept-ranges: bytes
+```
