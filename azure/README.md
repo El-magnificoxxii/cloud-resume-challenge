@@ -129,3 +129,13 @@ x-fd-int-roxy-purgeid: 1
 x-cache: PRIVATE_NOSTORE
 accept-ranges: bytes
 ```
+
+
+### To verify $web container exists
+
+```bash
+az storage container list \
+  --account-name abdullateefoni346088 \
+  --auth-mode login \
+  --output table
+```
