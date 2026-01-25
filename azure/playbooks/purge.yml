@@ -1,0 +1,27 @@
+---
+- name: Purge Azure Front Door cache (all paths)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    resource_group: cloud-resume-challenge
+    front_door_profile_name: fd-prtqllz6hqg4a           # ← your actual profile name
+    front_door_endpoint_name: fd-endpoint-prtqllz6hqg4a  # ← your actual endpoint name (without .azurefd.net)
+    content_paths: "/*"                                  # or "/index.html", "/assets/*" etc.
+
+  tasks:
+    - name: Purge all paths on Front Door
+      ansible.builtin.command: >
+        az afd endpoint purge
+        --resource-group {{ resource_group }}
+        --profile-name {{ front_door_profile_name }}
+        --endpoint-name {{ front_door_endpoint_name }}
+        --content-paths {{ content_paths }}
+      register: purge_result
+      changed_when: purge_result.rc == 0
+      failed_when: purge_result.rc != 0
+
+    - name: Show purge result
+      ansible.builtin.debug:
+        msg: "Purge command completed with rc={{ purge_result.rc }}. Wait 2–5 minutes for global effect."
