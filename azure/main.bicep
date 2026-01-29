@@ -7,17 +7,19 @@ param storage_account_name string
 @description('Your custom domain (e.g., abdullateefoniresume.online or www.abdullateefoniresume.online)')
 param custom_domain_name string 
 
+param apex_domain_name string 
+
 @description('Name of your existing Azure DNS zone that hosts the domain')
 param dns_zone_name string 
 
-param wwwDomainName string = 'www.${custom_domain_name}'
+
 
 
 
 // ────────────────────────────────────────────────
 // Storage Account + Static Website enabled
 // ────────────────────────────────────────────────
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storage_account_name
   location: location
   kind: 'StorageV2'
@@ -46,7 +48,7 @@ var staticHost = replace(
 // ────────────────────────────────────────────────
 // Front Door Profile + Endpoint
 // ────────────────────────────────────────────────
-resource frontDoorProfile 'Microsoft.Cdn/profiles@2024-02-01' = {
+resource frontDoorProfile 'Microsoft.Cdn/profiles@2025-06-01' = {
   name: 'fd-${uniqueString(resourceGroup().id)}'
   location: 'global'
   sku: {
@@ -54,7 +56,7 @@ resource frontDoorProfile 'Microsoft.Cdn/profiles@2024-02-01' = {
   }
 }
 
-resource frontDoorEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2024-02-01' = {
+resource frontDoorEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2025-06-01' = {
   name: 'fd-endpoint-${uniqueString(resourceGroup().id)}'
   parent: frontDoorProfile
   location: 'global'
@@ -63,10 +65,39 @@ resource frontDoorEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2024-02-01' = {
   }
 }
 
+// Rule set that performs apex -> www redirect
+resource rulesetApex 'Microsoft.Cdn/profiles/ruleSets@2025-04-15' = {
+  name: 'rulesetApexRedirect'
+  parent: frontDoorProfile
+}
+
+
+//Rule (child resource of the ruleset)
+resource apexToWwwRule 'Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15' = {
+  name: 'apexToWwwRedirect'
+  parent: rulesetApex
+  properties: {
+    order: 2
+    actions: [
+      {
+        name: 'UrlRedirect'
+        parameters: {
+          redirectType: 'Moved'              // 301 (use 'PermanentRedirect' if you prefer 308)
+          destinationProtocol: 'Https'
+          customHostname: custom_domain_name       // e.g., "www.andrewbrownresume.net"
+          // customPath/customQueryString/customFragment optional
+          typeName: 'DeliveryRuleUrlRedirectActionParameters'
+        }
+      }
+    ]
+  }
+}
+
+
 // ────────────────────────────────────────────────
 // Origin Group + Origin (storage static web)
 // ────────────────────────────────────────────────
-resource originGroup 'Microsoft.Cdn/profiles/originGroups@2024-02-01' = {
+resource originGroup 'Microsoft.Cdn/profiles/originGroups@2025-06-01' = {
   name: 'storageOriginGroup'
   parent: frontDoorProfile
   properties: {
@@ -84,7 +115,7 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2024-02-01' = {
   }
 }
 
-resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2024-02-01' = {
+resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2025-06-01' = {
   name: 'storageOrigin'
   parent: originGroup
   properties: {
@@ -94,7 +125,6 @@ resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2024-02-01' = {
     httpsPort: 443
     priority: 1
     weight: 1000
-    enabledState: 'Enabled'
   }
 }
 
@@ -108,7 +138,7 @@ resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = {
 // ────────────────────────────────────────────────
 // Custom Domain + Managed Certificate
 // ────────────────────────────────────────────────
-resource customDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = {
+resource customDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
   name: replace(custom_domain_name, '.', '-')
   parent: frontDoorProfile
   properties: {
@@ -123,34 +153,53 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = {
   }
 }
 
+
+resource apexDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
+  name: replace(apex_domain_name, '.', '-')
+  parent: frontDoorProfile
+  properties: {
+    hostName: apex_domain_name
+    azureDnsZone: {
+      id: dnsZone.id
+    }
+    tlsSettings: {
+      certificateType: 'ManagedCertificate'
+      minimumTlsVersion: 'TLS12'
+    }
+  }
+}
+
 // ────────────────────────────────────────────────
 // Route – binds endpoint + origin group + custom domain
 // ────────────────────────────────────────────────
-resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
+resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-06-01' = {
   name: 'defaultRoute'
   parent: frontDoorEndpoint
   properties: {
-    originGroup: {
-      id: originGroup.id
-    }
-    supportedProtocols: [
-      'Http'
-      'Https'
-    ]
-    patternsToMatch: [
-      '/*'
-    ]
-    forwardingProtocol: 'MatchRequest'
-    linkToDefaultDomain: 'Disabled'
+    originGroup: { id: originGroup.id }
+    supportedProtocols: [ 'Http', 'Https' ]
     httpsRedirect: 'Enabled'
-    customDomains: [
-      {
-        id: customDomain.id  // apex
-      }
-      {
-        id: wwwCustomDomain.id  // www
-      }
-    ]
+    linkToDefaultDomain: 'Disabled'
+    customDomains: [ { id: customDomain.id } ]
+    patternsToMatch: [ '/*' ]
+    forwardingProtocol: 'MatchRequest'
+    enabledState: 'Enabled'
+  }
+}
+
+resource routeApexWww 'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-06-01' = {
+  name: 'routeRedirect'
+  parent: frontDoorEndpoint
+  properties: {
+    originGroup: { id: originGroup.id }
+    customDomains: [ { id: apexDomain.id } ]
+    //patternsToMatch: [ '/*' ]
+    supportedProtocols: [ 'Http', 'Https' ]
+    linkToDefaultDomain: 'Disabled'
+    ruleSets: [ { id: rulesetApex.id } ]
+
+    // no originGroup here — we are *redirecting*, not forwarding
+    forwardingProtocol: 'MatchRequest'
     cacheConfiguration: {
       queryStringCachingBehavior: 'IgnoreQueryString'
       compressionSettings: {
@@ -169,27 +218,10 @@ resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
 }
 
 
-// ────────────────────────────────────────────────
-// www Custom Domain + Managed Certificate
-// ────────────────────────────────────────────────
-resource wwwCustomDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = {
-  name: replace(wwwDomainName, '.', '-')
-  parent: frontDoorProfile
-  properties: {
-    hostName: wwwDomainName
-    azureDnsZone: {
-      id: dnsZone.id
-    }
-    tlsSettings: {
-      certificateType: 'ManagedCertificate'
-      minimumTlsVersion: 'TLS12'
-    }
-  }
-}
 
 // ────────────────────────────────────────────────
 // Outputs
 // ────────────────────────────────────────────────
 output storageBlobEndpoint string = storageAccount.properties.primaryEndpoints.web
 output frontDoorEndpointHostname string = frontDoorEndpoint.properties.hostName
-output customDomainUrl string = 'https://${custom_domain_name}'
+output customDomainUrl string = custom_domain_name

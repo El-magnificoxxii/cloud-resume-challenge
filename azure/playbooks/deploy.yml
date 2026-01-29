@@ -7,7 +7,8 @@
     resource_group: cloud-resume-challenge
     location: ukwest
     storage_account_name: abdullateefoni346088     # make sure it's unique
-    custom_domain_name: abdullateefoniresume.online
+    custom_domain_name: www.abdullateefoniresume.online
+    apex_domain_name: abdullateefoniresume.online   # ← NEW: required for ALIAS record
     dns_zone_name: abdullateefoniresume.online     # ← NEW: required for ALIAS record
     deployment_name: "deploy-full-{{ ansible_facts.date_time.date | regex_replace('-', '') }}{{ ansible_facts.date_time.time | replace(':', '') }}"
 
@@ -31,6 +32,7 @@
           location={{ location }}
           storage_account_name={{ storage_account_name }}
           custom_domain_name={{ custom_domain_name }}
+          apex_domain_name={{ apex_domain_name }}
           dns_zone_name={{ dns_zone_name }}
         --output json
       args:
