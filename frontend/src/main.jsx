@@ -18,6 +18,7 @@ createRoot(document.querySelector('main')).render(
         <Route path="/resume" element={<ResumePage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:handle" element={<ProjectPage />} />
+        <Route path="*" element={<HomePage />} /> // Fallback to Home for unknown routes
       </Route>
     </Routes>
 

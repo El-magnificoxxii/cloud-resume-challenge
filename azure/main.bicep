@@ -44,7 +44,7 @@ var staticHost = replace(
   '/',
   ''
 )
-
+/* all resources that were commented out were because we would be redirecting to cloudflare and all previous resources from CDN or front door would not be needed
 // ────────────────────────────────────────────────
 // Front Door Profile + Endpoint
 // ────────────────────────────────────────────────
@@ -114,7 +114,8 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2025-06-01' = {
     sessionAffinityState: 'Disabled'
   }
 }
-
+*/
+/*
 resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2025-06-01' = {
   name: 'storageOrigin'
   parent: originGroup
@@ -127,7 +128,9 @@ resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2025-06-01' = {
     weight: 1000
   }
 }
+*/
 
+/*we wont be needing Azure dns, Dns zone and custom domain since we would we redirecting to cloudflare
 // ────────────────────────────────────────────────
 // DNS Zone (existing)
 // ────────────────────────────────────────────────
@@ -153,7 +156,8 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
   }
 }
 
-
+*/// ────────────────────────────────────────────────
+/*
 resource apexDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
   name: replace(apex_domain_name, '.', '-')
   parent: frontDoorProfile
@@ -168,7 +172,8 @@ resource apexDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
     }
   }
 }
-
+*/
+/*
 // ────────────────────────────────────────────────
 // Route – binds endpoint + origin group + custom domain
 // ────────────────────────────────────────────────
@@ -187,6 +192,8 @@ resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-06-01' = {
   }
 }
 
+*/
+/*
 resource routeApexWww 'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-06-01' = {
   name: 'routeRedirect'
   parent: frontDoorEndpoint
@@ -216,12 +223,12 @@ resource routeApexWww 'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-06-01' = 
     }
   }
 }
-
+*/
 
 
 // ────────────────────────────────────────────────
 // Outputs
 // ────────────────────────────────────────────────
 output storageBlobEndpoint string = storageAccount.properties.primaryEndpoints.web
-output frontDoorEndpointHostname string = frontDoorEndpoint.properties.hostName
+/*output frontDoorEndpointHostname string = frontDoorEndpoint.properties.hostName */
 output customDomainUrl string = custom_domain_name

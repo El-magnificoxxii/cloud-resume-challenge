@@ -105,6 +105,7 @@ az role assignment create \
 ansible-playbook purge.yml -vvv  # to purge frontdoor
 ansible-playbook deploy.yml -vvv # to deploy infrastructure in main.bicep
 ansible-playbook upload.yml -vvv # to upload files into storage container
+ansible-playbook purge-cloudflare.yml -vvv # to purge frontdoor
 ```
 ### checking DNS resolution and ensuring apex is redirecting to frontdoor
 
@@ -138,4 +139,25 @@ az storage container list \
   --account-name abdullateefoni346088 \
   --auth-mode login \
   --output table
+```
+# Edit Vault
+## We are going to store all sensitive information here for security
+
+# Create a vault inside your playbooks to store secrets like token_id from cloudflare, and then you can run the following commands
+
+```bash
+ansible-vault create playbooks/vaults/prod.yml #to create yml to store secrets
+ansible-vault edit playbooks/vaults/prod.yml  #to edit yml 
+ansible-vault view playbooks/vaults/prod.yml  #to view secret files
+```
+
+# To Run Purge For cloudflare with key
+
+```bash
+ansible-playbook purge-cloudflare.yml --ask-vault-pass -vvvv
+```
+# To Run the New upload with key
+
+```bash
+ansible-playbook upload.yml --ask-vault-pass -vvvv
 ```

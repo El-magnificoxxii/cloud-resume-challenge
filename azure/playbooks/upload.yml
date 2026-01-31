@@ -142,3 +142,11 @@
           - "Assets uploaded: {{ upload_assets.rc == 0 }}"
           - "index.html uploaded: {{ upload_index.rc == 0 }}"
           - "Other files uploaded: {{ top_level_files.files | length }}"
+    
+
+# Purge Cloudflare cache immediately after upload//.....i am adding this to ensure cloudflare purge immadiately after upload
+- import_playbook: purge-cloudflare.yml
+
+
+
+
