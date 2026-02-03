@@ -1,1 +1,7 @@
 node_modules
+
+# Explicitly ignore all project venvs
+azure/playbooks/venv/
+azure/playbooks/.venv/
+azure/playbooks/ansible-azure-venv/
+azure/playbooks/ansible-venv/

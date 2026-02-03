@@ -1,0 +1,98 @@
+---
+- name: Deploy Cosmos DB for visitor counter (cheapest serverless + free tier)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    resource_group_name: cloud-resume-challenge
+    location: ukwest
+    cosmos_account_name: crcviewcounter02022026 # unique suffix
+    database_name: CounterDB
+    container_name: Counter
+    bicep_file_path: ../db.bicep
+  tasks:
+    - name: Ensure Azure CLI is logged in
+      ansible.builtin.command: az account show --output none
+      register: az_login_check
+      failed_when: az_login_check.rc != 0
+      changed_when: false
+      ignore_errors: true
+
+    - name: Login to Azure CLI if not already logged in
+      ansible.builtin.pause:
+        prompt: "Please run 'az login' in another terminal and press Enter when done"
+      when: az_login_check.rc != 0
+
+    - name: Ensure resource group exists
+      ansible.builtin.command: >
+        az group create
+        --name {{ resource_group_name }}
+        --location {{ location }}
+        --output none
+      changed_when: false
+      register: rg_result
+      failed_when: rg_result.rc != 0 and 'already exists' not in rg_result.stderr
+
+    #- name: Deploy Cosmos DB using Bicep
+      #ansible.builtin.command: >
+        #az deployment group create
+        #--resource-group {{ resource_group_name }}
+        #--name "deploy-cosmos-{{ lookup('pipe', 'date +%Y%m%d-%H%M%S') }}"
+        #--template-file {{ bicep_file_path }}
+        #--parameters
+          #location={{ location }}
+          #cosmos_account_name={{ cosmos_account_name }}
+          #databaseName={{ database_name }}
+          #containerName={{ container_name }}
+        #--mode Incremental
+        #--output json
+      #register: bicep_deploy
+      #changed_when: true
+
+    - name: Deploy Cosmos DB using Bicep
+      ansible.builtin.command: >
+        az deployment group create
+        --resource-group {{ resource_group_name }}
+        --name "deploy-cosmos-{{ lookup('pipe', 'date +%Y%m%d-%H%M%S') }}"
+        --template-file {{ bicep_file_path }}
+        --parameters
+          location={{ location }}
+          cosmos_account_name={{ cosmos_account_name }}
+          database_name={{ database_name }}
+          container_name={{ container_name }}
+        --mode Incremental
+        --output json
+      register: bicep_deploy
+      changed_when: true
+
+    - name: Show deployment result
+      ansible.builtin.debug:
+        msg: "{{ bicep_deploy.stdout | from_json | json_query('properties.provisioningState') }}"
+
+    - name: Get connection string
+      ansible.builtin.command: >
+        az cosmosdb keys list
+        --type connection-strings
+        --name {{ cosmos_account_name }}
+        --resource-group {{ resource_group_name }}
+        --query "connectionStrings[?description=='Primary MongoDB Connection String'].connectionString"
+        --output tsv
+      register: conn_string
+      changed_when: false
+
+    - name: Connection string - SAVE THIS SECURELY
+      ansible.builtin.debug:
+        msg: |
+          ╔══════════════════════════════════════════════════════════════╗
+          ║                  COSMOS DB CONNECTION STRING                 ║
+          ╚══════════════════════════════════════════════════════════════╝
+
+          {{ conn_string.stdout | trim }}
+
+          Add this to your Function App → Configuration → Application settings:
+
+          Name:  CosmosDBConnectionString
+          Value: {{ conn_string.stdout | trim }}
+
+          Do NOT commit this to git!
