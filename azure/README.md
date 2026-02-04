@@ -161,3 +161,9 @@ ansible-playbook purge-cloudflare.yml --ask-vault-pass -vvvv
 ```bash
 ansible-playbook upload.yml --ask-vault-pass -vvvv
 ```
+
+# To Test Incremental Count from function
+
+```bash
+curl -X POST https://viewcounterapps.azurewebsites.net/api/http_trigger
+```

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-curl http://localhost:7071/api/http_trigger?name=counter
+#curl http://localhost:7071/api/http_trigger?name=counter
+curl -v https://viewcounterapps.azurewebsites.net/api/http_trigger
 
-curl https://viewcounterapps.azurewebsites.net/api/http_trigger?name=counter
+
+
