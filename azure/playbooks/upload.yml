@@ -23,7 +23,7 @@
         ci: true
 
     - name: Build Vite app
-      ansible.builtin.shell: npm run build
+      ansible.builtin.shell: npm run build_azure
       args:
         chdir: "{{ frontend_dir }}"
 
