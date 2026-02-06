@@ -311,6 +311,7 @@ resource cdnCustomDomain 'Microsoft.Cdn/profiles/endpoints/customDomains@2024-02
    - **Root cause**: Microsoft fully deprecated **classic CDN** (all SKUs: Verizon, Microsoft, etc.) for new profile creations as of late 2025/early 2026.  
    - **Solution**: Migrated to **Azure Front Door** (the modern replacement for classic CDN).
 
+
 # January 18–24, 2026 – Final Phase: Static Hosting, Upload, Cert Propagation, and Custom Domain Live
 ### Issue: $web container not auto-created / static hosting disabled after multiple deploys
 
@@ -365,5 +366,154 @@ my url abdullateefoniesume.online was working however i noticed www. abdullateef
 
 ### Solution
 i added www recordset in cname and directed it  to my frontdoor
+
+
+## 2026-02-03 – Azure Front Door → Cloudflare migration + cache purge integration
+
+I initially set up Azure Front Door in front of my static site hosted in Azure Blob Storage. It worked fine, but after reviewing the cost, I decided to switch to Cloudflare free tier to reduce expenses while still keeping CDN and caching capabilities.
+
+### What I did
+
+1. Created a Cloudflare account (free tier)  
+2. Added my domain: `abdullateefoni-resume.online`  
+3. Updated the name servers in Azure DNS to the Cloudflare-provided name servers  
+4. Waited for DNS propagation (about 1 hour, though it can take up to 24 hours)  
+5. Verified domain activation in Cloudflare using **Check nameservers now**  
+6. Added DNS records in Cloudflare:
+   - Created a **CNAME record** pointing to the Azure Blob Storage static website endpoint  
+   - Added required **A records**  
+7. Configured redirects and security:
+   - Enabled redirect to `www`  
+   - Enabled HTTP → HTTPS using Cloudflare templates  
+8. Tested different SSL/TLS modes (Flexible → Full → Full (strict)) to confirm correct configuration  
+
+### Workers and routing setup
+
+To support SPA routing and custom redirect logic, I configured Cloudflare Workers:
+
+- Created a new Worker application (Hello World template)  
+- Downloaded and edited `worker.js` locally in VS Code  
+- Deployed the Worker and pasted my custom logic into Cloudflare  
+
+Then I added two Worker routes:
+
+**Route 1 (apex domain):**
+- Pattern: `*abdullateefoniresume.online/*`  
+- Worker: `resume-worker`  
+
+**Route 2 (www):**
+- Pattern: `*www.abdullateefoniresume.online/*`  
+- Worker: `resume-worker`  
+
+### Testing
+
+I tested the following in incognito/private mode:
+
+- `https://abdullateefoniresume.online`  
+  → Redirects to `https://www.abdullateefoniresume.online`  
+
+- `https://www.abdullateefoniresume.online`  
+  → Loads resume (index.html + CSS/JS/images from Azure)  
+
+- Fake route test:  
+  `https://www.abdullateefoniresume.online/about`  
+
+Initially, this showed a blank page with only the background. To fix this, I added a fallback route in my React app:
+
+```jsx
+<Route path="*" element={<HomePage />} />
+```
+This now redirects any unknown route back to the homepage.
+
+### To automate cache clearing after deployments:
+
+Created new playbook: purge-cloudflare.yml
+
+This playbook purges Cloudflare cache after Blob upload
+
+Added it to upload.yml using:
+``` bash
+import_playbook: purge-cloudflare.yml
+```
+### Securing Cloudflare Token Using Vault
+
+- I created a vault to secure the tokens gotten from cloudflare that's added to purge-cloudflare.yml file using
+- In the editor, i entered (lowercase i) → you enter insert mode (you'll see -- INSERT -- at the bottom in vim)
+- pasted the Cloudflare API token (Ctrl+V or Cmd+V) in the prod.yml
+```
+cloudflare_api_token: "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
+cloudflare_zone_id: "xxxxxxxxxx"
+```
+- Press Esc to exit insert mode
+- Type :wq and Enter to save and quit
+
+- I intially made a mistake while creating the Vault, so i used this to force remove the vault before recreating
+``` bash
+rm -f playbooks/vaults/prod.yml
+```
+
+
+# 2026-02-03–02-04 – Cosmos DB serverless deployment nightmare
+
+Spent way too long on the Cosmos DB part.
+
+**Main blockers:**
+- `azure.azcollection` modules → dependency hell in WSL (msrestazure, azure-mgmt-* not found even after pip install ansible[azure])
+- Switched to pure `az cli` in deploy-db.yml
+- Bicep param name mismatches (`cosmosAccountName` vs `cosmos_account_name`)
+- API version `2024-04-15` → NoRegisteredProviderFound in ukwest (even though provider registered)
+- Throughput set on container → serverless forbids it
+- `analyticalStorageTtl` → invalid in serverless
+
+**Final working Bicep** (after removing throughput + analyticalStorageTtl):
+- Serverless mode enabled
+- Database: CounterDB
+- Container: Counter
+- Partition key: /id
+
+**Ansible playbook** now uses `az deployment group create` + `az cosmosdb keys list`
+
+**Big lesson:** Serverless Cosmos DB = **no** throughput or analytical settings allowed. Remove `options` block completely.
+
+**Success:** First GET returned `{"count": 0}`. POST increments correctly.
+
+# 2026-02-04 – Azure Function deployment & connection Issues
+
+## Issue 1 — 404 Not Found on Function Endpoint
+
+### Symptom
+running this command:
+```bash
+curl https://viewcounterapps.azurewebsites.net/api/http_trigger
+```
+returned
+```
+HTTP/1.1 500 Internal Server Error
+
+```
+then i installed
+```bash
+sudo apt install python3-pip
+# Create venv
+python3 -m venv venv
+source venv/bin/activate
+# Install deps
+pip install -r requirements.txt
+# Run locally
+func start
+# Deploy to Azure
+func azure functionapp publish viewcounterapps
+
+```
+Logs showed:
+```php
+Exception: KeyError: 'COSMOS_ENDPOINT'
+```
+
+so i went to azure function and i ensured COSMOS_CONTAINER, COSMOS_DATABASE, COSMOS_ENDPOINT and COSMOS_KEY were added to environment variables and it worked
+
+
+
+
 
 

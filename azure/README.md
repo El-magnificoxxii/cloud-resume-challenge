@@ -105,7 +105,8 @@ az role assignment create \
 ansible-playbook purge.yml -vvv  # to purge frontdoor
 ansible-playbook deploy.yml -vvv # to deploy infrastructure in main.bicep
 ansible-playbook upload.yml -vvv # to upload files into storage container
-ansible-playbook purge-cloudflare.yml -vvv # to purge frontdoor
+ansible-playbook purge-cloudflare.yml -vvv # to purge Azure frontdoor
+ansible-playbook deploy-db.yml -vvv # to deploy cosmos db
 ```
 ### checking DNS resolution and ensuring apex is redirecting to frontdoor
 
@@ -151,18 +152,15 @@ ansible-vault edit playbooks/vaults/prod.yml  #to edit yml
 ansible-vault view playbooks/vaults/prod.yml  #to view secret files
 ```
 
-# To Run Purge For cloudflare with key
+# To Run Purge For cloudflare 
 
 ```bash
-ansible-playbook purge-cloudflare.yml --ask-vault-pass -vvvv
-```
-# To Run the New upload with key
-
-```bash
-ansible-playbook upload.yml --ask-vault-pass -vvvv
+ansible-playbook purge-cloudflare.yml --ask-vault-pass -vvv ### --ask-vault-pass is added because the tokens in cloudflare are secured in a vault
 ```
 
-# To Test Incremental Count from function
+
+
+# To Test Count from function
 
 ```bash
 curl -X POST https://viewcounterapps.azurewebsites.net/api/http_trigger
