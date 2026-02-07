@@ -2,8 +2,8 @@ const resumeData = {
   person: {
     name: "Abdullateef Oni",
     email: "abdullateefoni@yahoo.com",
-    phone: "+234 803 123 4567",
-    website: "www.example.com"
+    phone: "+234 903 XXX XXXX",
+    website: "www.abdullateefoniresume.online",
   },
 
   sections: [

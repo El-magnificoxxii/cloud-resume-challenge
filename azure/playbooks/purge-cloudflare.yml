@@ -7,15 +7,6 @@
   vars_files:
     - vaults/prod.yml
 
-  #vars:
-  
-    # ────────────────────────────────────────────────
-    # CHANGE THESE VALUES
-    # ────────────────────────────────────────────────
-    #cloudflare_api_token: "{{CLOUDFLARE_API_TOKEN}}"      # ← REQUIRED
-    #cloudflare_zone_id:   "{{CLOUDFLARE_ZONE_ID}}"                   # ← REQUIRED
-    # You can get zone_id from Cloudflare dashboard → Overview → right sidebar
-
   tasks:
     - name: Purge entire Cloudflare cache (all files)
       ansible.builtin.uri:

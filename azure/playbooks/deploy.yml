@@ -3,7 +3,6 @@
   hosts: localhost
   connection: local
   vars:
-    #ansible_python_interpreter: /usr/bin/python3   # remove if not needed
     resource_group: cloud-resume-challenge
     location: ukwest
     storage_account_name: abdullateefoni346088     # make sure it's unique

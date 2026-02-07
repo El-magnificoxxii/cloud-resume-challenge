@@ -4,5 +4,23 @@
     "handle": "hello-world",
     "date": "2026-01-04",
     "body_html": "<h2>Hello World!</h2>\n<p>This is my <strong>first</strong> blog post. I promise more is coming soon!</p>\n<div class=\"codehilite\"><pre><span></span><code><span class=\"nb\">print</span><span class=\"p\">(</span><span class=\"s2\">&quot;Hello, world!&quot;</span><span class=\"p\">)</span>\n</code></pre></div>"
+  },
+  {
+    "name": "Estimating Microsoft Sentinel Costs: A Practical Guide",
+    "handle": "estimating-microsoft-sentinel-costs-practical-guide",
+    "date": "2025-02-03",
+    "body_html": "<h2>Estimating Microsoft Sentinel Costs: A Practical Guide</h2>\n<p>This article provides a practical guide to help you estimate Sentinel costs based on your specific needs using the Azure Pricing Calculator. <a href=\"https://medium.com/@abdullateefoni/estimating-microsoft-sentinel-costs-a-practical-guide-db50d7a52ccc\" target=\"_blank\" rel=\"noopener noreferrer\">Click here to learn more</a></p>"
+  },
+  {
+    "name": "Estimating Microsoft Sentinel Costs — Understanding Key Components",
+    "handle": "estimating-microsoft-sentinel-costs",
+    "date": "2025-01-08",
+    "body_html": "<h2>Estimating Microsoft Sentinel Costs — Understanding Key Components</h2>\n<p>This article provides a practical guide for estimating the cost of using Microsoft Sentinel, specifically tailored for budget managers, cloud professionals and anyone interested in cloud costs.<a href=\"https://medium.com/@abdullateefoni/estimating-microsoft-sentinel-costs-understanding-key-components-02ac92f3cf1c\" target=\"_blank\" rel=\"noopener noreferrer\">Click here to learn more</a></p>"
+  },
+  {
+    "name": "Deploying a Jumpbox server in Azure using Terraform",
+    "handle": "deploying-jumpbox-server-azure-terraform",
+    "date": "2023-08-14",
+    "body_html": "<h2>Deploying a Jumpbox server in Azure using Terraform</h2>\n<p>I documented my journey learning Terraform and how to deploy a jumpbox server in Azure using Terraform. <a href=\"https://medium.com/@abdullateefoni/deploying-a-jumpbox-server-in-azure-using-terraform-70e7eca2cc8f\" target=\"_blank\" rel=\"noopener noreferrer\">Click here to learn more</a></p>"
   }
 ]

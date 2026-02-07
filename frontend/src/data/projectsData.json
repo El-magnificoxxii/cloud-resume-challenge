@@ -3,21 +3,28 @@
     "name": "Secure Azure Hub-and-Spoke Network",
     "handle": "securing hub-and-spoke azure networks with azure firewall and point-to-site vpn",
     "thumbnail": "https://placehold.co/320x200",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "body_html": "<h1>Secure Azure Architecture</h1>\n<p>This project demonstrates <strong>best practices</strong> for deploying secure workloads on Azure.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Hub-and-spoke networking</li>\n<li>Azure Firewall</li>\n<li>Cost optimization with FinOps</li>\n</ul>\n<p><a href=\"https://learn.microsoft.com/azure\">Read more</a></p>"
+    "description": "This project demonstrates how to secure Azure hub-and-spoke networks using Azure Firewall and Point-to-Site VPN.",
+    "body_html": "<h1>Secure Azure Architecture</h1>\n<p>This project demonstrates <strong>best practices</strong> for deploying secure workloads on Azure.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Hub-and-spoke networking</li>\n<li>Azure Firewall</li>\n<li>Azure Point-to-Site VPN</li>\n<li>Virtual Network Peering</li></ul>\n<p><a href=\"https://github.com/El-magnificoxxii/Azure-Refresher/tree/main/Point-to-Site-Connection\" target=\"_blank\" rel=\"noopener noreferrer\">Read more</a></p>"
   },
   {
     "name": "Azure FinOps Power BI Dashboard",
     "handle": "azure finops power bi dashboard",
     "thumbnail": "https://placehold.co/320x200",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "body_html": "<h1>Secure Azure Architecture</h1>\n<p>This project demonstrates <strong>best practices</strong> for deploying secure workloads on Azure.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Hub-and-spoke networking</li>\n<li>Azure Firewall</li>\n<li>Cost optimization with FinOps</li>\n</ul>\n<p><a href=\"https://learn.microsoft.com/azure\">Read more</a></p>"
+    "description": "This project demonstrates how to build, analyse and visualise Azure cloud costs in a Power BI dashboard.",
+    "body_html": "<h1>Azure FinOps Power BI Dashboard</h1>\n<p>This project demonstrates the use of  <strong>Power BI</strong>.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Top Service by Spend</li>\n<li>Cost per Service</li>\n<li>Cost optimization with FinOps</li>\n</ul>\n<p><a href=\"https://github.com/El-magnificoxxii/Azure-FinOps-PowerBI-Dashboard-1.0\" target=\"_blank\" rel=\"noopener noreferrer\">Read more</a></p>"
+  },
+  {
+    "name": "Cloud Resume Challenge",
+    "handle": "cloud resume challenge",
+    "thumbnail": "https://placehold.co/320x200",
+    "description": "This project demonstrates how to design and deploy a full-stack cloud resume application using Azure services and serverless architecture.",
+    "body_html": "<h1>Cloud Resume Challenge (Azure)</h1>\n<p>This project demonstrates the implementation of a <strong>serverless, cloud-native resume website</strong> using Microsoft Azure, following the Cloud Resume Challenge framework.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Static website hosting with Azure Static Web Apps</li>\n<li>Azure Front Door</li>\n<li>Cloudflare</li>\n<li>Serverless backend using Azure Functions</li>\n<li>Azure Container Storage</li>\n<li>View counter stored in Cosmos DB</li>\n<li>Infrastructure-as-Code for repeatable deployments</li>\n<li>Frontend built with React + Vite</li>\n<li>Infrastructure-as-Code for repeatable deployments</li>\n<li>Local development and testing workflow</li>\n</ul>\n<p>This project demonstrates practical cloud engineering skills including <strong>API design, cloud security, automation, and cost-aware architecture</strong>.</p>\n<p><a href=\"https://github.com/El-magnificoxxii/cloud-resume-challenge\" target=\"_blank\" rel=\"noopener noreferrer\">Read more</a></p>"
   },
   {
     "name": "Azure IIS Hosting with Application Gateway",
-    "handle": "hosting multiple iis websites on azure using application gateway and https",
+    "handle": "hosting multiple iis websites on azure VM using application gateway and https",
     "thumbnail": "https://placehold.co/320x200",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "body_html": "<h1>Secure Azure Architecture</h1>\n<p>This project demonstrates <strong>best practices</strong> for deploying secure workloads on Azure.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Hub-and-spoke networking</li>\n<li>Azure Firewall</li>\n<li>Cost optimization with FinOps</li>\n</ul>\n<p><a href=\"https://learn.microsoft.com/azure\">Read more</a></p>"
+    "description": "This project demonstrates how to host multiple IIS websites on an Azure VM using Application Gateway and HTTPS.",
+    "body_html": "<h1>Azure IIS Hosting with Application Gateway</h1>\n<p>This project demonstrates <strong>hosting multiple IIS websites</strong> on an Azure VM using Application Gateway and HTTPS.</p>\n<h2>Key Features</h2>\n<ul>\n<li>Multiple IIS websites</li>\n<li>Application Gateway</li>\n<li>HTTPS Configuration</li>\n<li>Cost optimization with FinOps</li></ul>\n<p><a href=\"https://github.com/El-magnificoxxii/Azure-Refresher/tree/main/azure-webserver-windows\" target=\"_blank\" rel=\"noopener noreferrer\">Read more</a></p>"
   }
 ]

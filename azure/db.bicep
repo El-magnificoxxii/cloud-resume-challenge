@@ -66,7 +66,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         paths: ['/id']  // single partition – we only have one document
         kind: 'Hash'
       }
-      defaultTtl: -1  // no TTL
+      defaultTtl: -1  // no TTL required for serverless 
       //analyticalStorageTtl: -1
     }
     //options: {
