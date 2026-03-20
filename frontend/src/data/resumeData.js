@@ -181,6 +181,7 @@ const resumeData = {
             "Performed environment assessments using Block 64 to identify security and optimization gaps.",
             "Collaborated with solution architects and Microsoft teams for production-ready deployments.",
             "Manage Azure subscription lifecycle, billing, and cost optimization across customer environments."
+            
           ]
         },
         {
