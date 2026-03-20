@@ -513,6 +513,9 @@ Exception: KeyError: 'COSMOS_ENDPOINT'
 so i went to azure function and i ensured COSMOS_CONTAINER, COSMOS_DATABASE, COSMOS_ENDPOINT and COSMOS_KEY were added to environment variables and it worked
 
 
+i deleted DNS ZOne in azure portal since i am using cloudflare
+
+
 
 
 

@@ -7,10 +7,10 @@ param storage_account_name string
 @description('Your custom domain (e.g., abdullateefoniresume.online or www.abdullateefoniresume.online)')
 param custom_domain_name string 
 
-param apex_domain_name string 
+//param apex_domain_name string 
 
-@description('Name of your existing Azure DNS zone that hosts the domain')
-param dns_zone_name string 
+//@description('Name of your existing Azure DNS zone that hosts the domain')
+//param dns_zone_name string 
 
 
 
