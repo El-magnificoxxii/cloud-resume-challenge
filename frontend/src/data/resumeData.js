@@ -106,7 +106,9 @@ const resumeData = {
             "Reserved Instances",
             "Azure Hybrid Benefit",
             "Savings Plan",
-            "Azure Pricing Calculator"
+            "Azure Pricing Calculator",
+            "Unit Economics",
+            "FinOps Dashboard"
           ]
         },
         {
@@ -141,18 +143,18 @@ const resumeData = {
           bullets: [
             "FinOps Certified Practitioner",
             "FinOps Certified FOCUS Analyst",
+            "Microsoft Certified: Azure Solutions Architect Expert",
             "AWS Certified Solutions Architect – Associate",
-            "Azure Administrator Associate",
+            "Microsoft Certified: Azure Administrator Associate",
             "Microsoft Certified: Azure Fundamentals",
             "Microsoft Certified: Security, Compliance, and Identity Fundamentals",
             "Block 64 Certified Technical Specialist",
             "Microsoft Licensing Specialist Azure Solutions",
-            "Microsoft Certified: Security, Compliance, and Identity Fundamentals",
             "Mckinsey Forward Program",
             "Microsoft Licensing Specialist CSP Program",
             "Microsoft Licensing Specialist On-Premises",
-            "Microsoft Dynamics 365 Licensing Specialist"
-            
+            "Microsoft Dynamics 365 Licensing Specialist",
+            "Microsoft Collaborator - Well-Architected Framework"
           ]
         }
       ]
@@ -181,7 +183,6 @@ const resumeData = {
             "Performed environment assessments using Block 64 to identify security and optimization gaps.",
             "Collaborated with solution architects and Microsoft teams for production-ready deployments.",
             "Manage Azure subscription lifecycle, billing, and cost optimization across customer environments."
-            
           ]
         },
         {

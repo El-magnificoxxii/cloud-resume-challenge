@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "10602083092411134724"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region for regional resources (storage). AFD is global."
+      }
+    },
+    "storage_account_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account name – must be globally unique (3–24 lowercase letters + digits)"
+      }
+    },
+    "custom_domain_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Your custom domain (e.g., abdullateefoniresume.online or www.abdullateefoniresume.online)"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-09-01",
+      "name": "[parameters('storage_account_name')]",
+      "location": "[parameters('location')]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "allowBlobPublicAccess": true,
+        "minimumTlsVersion": "TLS1_2",
+        "supportsHttpsTrafficOnly": true,
+        "staticWebsite": {
+          "enabled": true,
+          "indexDocument": "index.html",
+          "errorDocument404Path": "index.html"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "storageBlobEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storage_account_name')), '2021-09-01').primaryEndpoints.web]"
+    },
+    "customDomainUrl": {
+      "type": "string",
+      "value": "[parameters('custom_domain_name')]"
+    }
+  }
+}
